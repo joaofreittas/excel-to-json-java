@@ -251,6 +251,7 @@ public class LifePensionPeriodGrantBenefit  implements Serializable {
     return this;
   }
 
+
   public LifePensionInvestmentFunds getInvestimentFunds() {
     return investimentFunds;
   }

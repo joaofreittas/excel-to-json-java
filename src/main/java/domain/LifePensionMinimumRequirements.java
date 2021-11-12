@@ -10,9 +10,6 @@ import java.util.Objects;
 public class LifePensionMinimumRequirements  implements Serializable {
   private static final long serialVersionUID = 1L;
 
-  /**
-   * O tipo de serviço contratado.
-   */
   public enum ContractTypeEnum {
     COLETIVO_AVERBADO("COLETIVO_AVERBADO"),
     
@@ -139,4 +136,3 @@ public class LifePensionMinimumRequirements  implements Serializable {
     return o.toString().replace("\n", "\n    ");
   }
 }
-

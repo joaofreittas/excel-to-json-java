@@ -8,6 +8,5 @@ public class Application {
     ConversorExcetToJsonUseCase converter = new ConversorExcetToJsonUseCase();
     String json = converter.execute();
     System.out.println(json);
-
   }
 }

@@ -4,7 +4,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import domain.LifePensionBrand;
 import domain.LifePensionCompany;
+import domain.LifePensionCosts;
 import domain.LifePensionDefferalPeriod;
+import domain.LifePensionDefferalPeriodMinimumPremiumAmount;
+import domain.LifePensionLoading;
+import domain.LifePensionMinimumRequirements;
+import domain.LifePensionPeriodGrantBenefit;
 import domain.LifePensionProduct;
 import domain.LifePensionProductDetails;
 import domain.ResponseLifePensionList;
@@ -13,13 +18,13 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import utils.ExtractValuesUtil;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.time.OffsetDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
@@ -36,7 +41,6 @@ public class ConversorExcetToJsonUseCase {
 
   public String execute() {
     List<LifePensionProduct> products = readExcelFile();
-
     return convertPersonsToJson(getResponse(products));
   }
 
@@ -63,6 +67,9 @@ public class ConversorExcetToJsonUseCase {
         LifePensionProduct product = new LifePensionProduct();
         LifePensionProductDetails details = new LifePensionProductDetails();
         LifePensionDefferalPeriod lifePensionDefferalPeriod = new LifePensionDefferalPeriod();
+        LifePensionPeriodGrantBenefit lifePensionPeriodGrantBenefit = new LifePensionPeriodGrantBenefit();
+        LifePensionCosts costs = new LifePensionCosts();
+        LifePensionMinimumRequirements lifePensionMinimumRequirements = new LifePensionMinimumRequirements();
 
         int cellIndex = 0;
         while (cellsInRow.hasNext()) {
@@ -73,7 +80,10 @@ public class ConversorExcetToJsonUseCase {
                   cellIndex,
                   product,
                   details,
-                  lifePensionDefferalPeriod
+                  lifePensionDefferalPeriod,
+                  lifePensionPeriodGrantBenefit,
+                  costs,
+                  lifePensionMinimumRequirements
           );
 
           cellIndex++;
@@ -95,23 +105,85 @@ public class ConversorExcetToJsonUseCase {
     return rowNumber == 0;
   }
 
-  private LifePensionProduct factoryProductByCell(
+  private void factoryProductByCell(
           Cell currentCell,
           Integer cellIndex,
           LifePensionProduct product,
           LifePensionProductDetails details,
-          LifePensionDefferalPeriod lifePensionDefferalPeriod
+          LifePensionDefferalPeriod lifePensionDefferalPeriod,
+          LifePensionPeriodGrantBenefit lifePensionPeriodGrantBenefit,
+          LifePensionCosts costs,
+          LifePensionMinimumRequirements lifePensionMinimumRequirements
   ) {
 
     buildProduct(currentCell, cellIndex, product);
     buildProductDetails(currentCell, cellIndex, details);
     buildLifePensionDefferalPeriod(currentCell, cellIndex, lifePensionDefferalPeriod);
-
+    buildGrantPeriodBenefit(currentCell, cellIndex, lifePensionPeriodGrantBenefit);
+    buildLifePensionCosts(currentCell, cellIndex, costs);
+    buildMinimunRequirements(currentCell, cellIndex, lifePensionMinimumRequirements);
 
     details.setDefferalPeriod(lifePensionDefferalPeriod);
+    details.setGrantPeriodBenefit(lifePensionPeriodGrantBenefit);
+    details.setCosts(costs);
     product.setProductDetails(details);
+    product.setMinimumRequirements(lifePensionMinimumRequirements);
 
-    return product;
+  }
+
+  private void buildMinimunRequirements(Cell currentCell, Integer cellIndex, LifePensionMinimumRequirements lifePensionMinimumRequirements) {
+    Integer CONTRACT_TYPE_INDEX = 31;
+    Integer PARTICIPANT_QUALIFIED_INDEX = 32;
+    Integer MIN_REQUIREMENTS_CONTRACT_INDEX = 33;
+
+    if(cellIndex.equals(CONTRACT_TYPE_INDEX)) {
+      lifePensionMinimumRequirements.setContractType(ExtractValuesUtil.extractContractTypeEnum(currentCell.getStringCellValue()));
+    } else if(cellIndex.equals(PARTICIPANT_QUALIFIED_INDEX)) {
+      lifePensionMinimumRequirements.setParticipantQualified(ExtractValuesUtil.extractBooleanValue(currentCell.getStringCellValue()));
+    } else if(cellIndex.equals(MIN_REQUIREMENTS_CONTRACT_INDEX)) {
+      lifePensionMinimumRequirements.setMinRequirementsContract(currentCell.getStringCellValue());
+    }
+  }
+
+  private void buildLifePensionCosts(Cell currentCell, Integer cellIndex, LifePensionCosts costs) {
+    Integer LOADING_ANTECIPATED_INDEX = 29;
+    Integer LOADING_LATE_INDEX = 30;
+
+    if(cellIndex.equals(LOADING_ANTECIPATED_INDEX)) {
+      LifePensionLoading lifePensionLoading = new LifePensionLoading();
+      lifePensionLoading.setMinValue(BigDecimal.valueOf(currentCell.getNumericCellValue()));
+      lifePensionLoading.setMaxValue(BigDecimal.valueOf(currentCell.getNumericCellValue()));
+      costs.setLoadingAntecipated(lifePensionLoading);
+    } else if(cellIndex.equals(LOADING_LATE_INDEX)) {
+      LifePensionLoading lifePensionLoading = new LifePensionLoading();
+      lifePensionLoading.setMinValue(BigDecimal.valueOf(currentCell.getNumericCellValue()));
+      lifePensionLoading.setMaxValue(BigDecimal.valueOf(currentCell.getNumericCellValue()));
+      costs.setLoadingLate(lifePensionLoading);
+    }
+
+  }
+
+  private void buildGrantPeriodBenefit(Cell currentCell, Integer cellIndex, LifePensionPeriodGrantBenefit grantBenefit) {
+    Integer INCOME_MODALITY_INDEX = 23;
+    Integer BIOMETRIC_TABLE_INDEX = 24;
+    Integer INTEREST_RATE_INDEX = 25;
+    Integer UPDATE_INDEX_INDEX = 26;
+    Integer REVERSAL_RESULTS_INDEX = 27;
+    Integer INVESTMENT_FUNDS_INDEX = 28;
+
+    if(cellIndex.equals(INCOME_MODALITY_INDEX)) {
+      grantBenefit.setIncomeModality(Collections.singletonList(ExtractValuesUtil.extractIncomeModality(currentCell.getStringCellValue())));
+    } else if(cellIndex.equals(BIOMETRIC_TABLE_INDEX)) {
+      grantBenefit.setBiometricTable(ExtractValuesUtil.exctractBiometricTable(currentCell.getStringCellValue()));
+    } else if(cellIndex.equals(INTEREST_RATE_INDEX)) {
+      grantBenefit.setInterestRate(BigDecimal.valueOf(currentCell.getNumericCellValue()));
+    } else if(cellIndex.equals(UPDATE_INDEX_INDEX)) {
+      grantBenefit.setUpdateIndex(ExtractValuesUtil.extractUpdateIndexGrantBenefitEnum(currentCell.getStringCellValue()));
+    } else if(cellIndex.equals(REVERSAL_RESULTS_INDEX)) {
+      grantBenefit.setReversalResultsFinancial(BigDecimal.valueOf(currentCell.getNumericCellValue()));
+    } else if(cellIndex.equals(INVESTMENT_FUNDS_INDEX)) {
+      grantBenefit.setInvestimentFunds(ExtractValuesUtil.extractInvestmentFunds(currentCell.getStringCellValue()));
+    }
   }
 
   private void buildLifePensionDefferalPeriod(Cell currentCell, Integer cellIndex, LifePensionDefferalPeriod lifePensionDefferalPeriod) {
@@ -119,6 +191,8 @@ public class ConversorExcetToJsonUseCase {
     Integer UPDATE_INDEX_INDEX = 9;
     Integer OTHER_MINIMUN_PERFORMANCE_GARANTEES_INDEX = 10;
     Integer REVERSAL_FINANCIAL_RESULTS_INDEX = 11;
+    Integer MINIMUM_PREMIUM_AMOUNT_INDEX = 12;
+    Integer PREMIUM_PAYMENT_METHOD_INDEX = 13;
     Integer PERMISSION_EXTRAORDINARY_CONTRIBUTIONS_INDEX = 14;
     Integer PERMISSION_SCHEDULED_FINANCIAL_PAYMENTS_INDEX = 15;
     Integer GRACE_PERIOD_REDEMPTION_INDEX = 16;
@@ -126,20 +200,28 @@ public class ConversorExcetToJsonUseCase {
     Integer REDEMPTION_PAYMENT_TERM_INDEX = 18;
     Integer GRACE_PERIOD_PORTABILITY_INDEX = 19;
     Integer GRACE_PERIOD_BETWEEN_PORTABILITY_REQUESTS_INDEX = 20;
-    Integer PORTABILIT_PAYMENT_TERM_INDEX = 21;
+    Integer PORTABILITY_PAYMENT_TERM_INDEX = 21;
+    Integer INVESTMENT_FUNDS_INDEX = 22;
 
     if(cellIndex.equals(INTEREST_RATE_INDEX)) {
-      lifePensionDefferalPeriod.setInterestRate(currentCell.getStringCellValue());
+      String value = currentCell.getStringCellValue();
+      lifePensionDefferalPeriod.setInterestRate(value.isBlank() ? BigDecimal.ZERO:BigDecimal.valueOf(Integer.parseInt(value)));
     } else if(cellIndex.equals(UPDATE_INDEX_INDEX)) {
-      lifePensionDefferalPeriod.setUpdateIndex(extractUpdateIndexEnum(currentCell.getStringCellValue()));
+      lifePensionDefferalPeriod.setUpdateIndex(ExtractValuesUtil.extractUpdateIndexEnum(currentCell.getStringCellValue()));
     } else if(cellIndex.equals(OTHER_MINIMUN_PERFORMANCE_GARANTEES_INDEX)) {
       lifePensionDefferalPeriod.setOtherMinimumPerformanceGarantees(currentCell.getStringCellValue());
     } else if(cellIndex.equals(REVERSAL_FINANCIAL_RESULTS_INDEX)) {
       lifePensionDefferalPeriod.setReversalFinancialResults(BigDecimal.valueOf(currentCell.getNumericCellValue()));
+    } else if(cellIndex.equals(MINIMUM_PREMIUM_AMOUNT_INDEX)) {
+      LifePensionDefferalPeriodMinimumPremiumAmount lifePensionDefferalPeriodMinimumPremiumAmount = new LifePensionDefferalPeriodMinimumPremiumAmount();
+      lifePensionDefferalPeriodMinimumPremiumAmount.setMinimumPremiumAmountValue(BigDecimal.valueOf(currentCell.getNumericCellValue()));
+      lifePensionDefferalPeriod.setMinimumPremiumAmount(Collections.singletonList(lifePensionDefferalPeriodMinimumPremiumAmount));
+    } else if(cellIndex.equals(PREMIUM_PAYMENT_METHOD_INDEX)) {
+      lifePensionDefferalPeriod.setPremiumPaymentMethod(ExtractValuesUtil.extractPremiumPaymentMethod(currentCell.getStringCellValue()));
     } else if(cellIndex.equals(PERMISSION_EXTRAORDINARY_CONTRIBUTIONS_INDEX)) {
-      lifePensionDefferalPeriod.setPermissionExtraordinaryContributions(extractBooleanValue(currentCell.getStringCellValue()));
+      lifePensionDefferalPeriod.setPermissionExtraordinaryContributions(ExtractValuesUtil.extractBooleanValue(currentCell.getStringCellValue()));
     } else if(cellIndex.equals(PERMISSION_SCHEDULED_FINANCIAL_PAYMENTS_INDEX)) {
-      lifePensionDefferalPeriod.setPermissonScheduledFinancialPayments(extractBooleanValue(currentCell.getStringCellValue()));
+      lifePensionDefferalPeriod.setPermissonScheduledFinancialPayments(ExtractValuesUtil.extractBooleanValue(currentCell.getStringCellValue()));
     } else if(cellIndex.equals(GRACE_PERIOD_REDEMPTION_INDEX)) {
       lifePensionDefferalPeriod.setGracePeriodRedemption(Integer.valueOf(currentCell.getStringCellValue().split(" ")[0]));
     } else if(cellIndex.equals(GRACE_PERIOD_BETWEEN_REDEMPTION_REQUESTS_INDEX)) {
@@ -150,8 +232,10 @@ public class ConversorExcetToJsonUseCase {
       lifePensionDefferalPeriod.setGracePeriodPortability((int) currentCell.getNumericCellValue());
     } else if(cellIndex.equals(GRACE_PERIOD_BETWEEN_PORTABILITY_REQUESTS_INDEX)) {
       lifePensionDefferalPeriod.setGracePeriodBetweenPortabilityRequests((int) currentCell.getNumericCellValue());
-    } else if(cellIndex.equals(PORTABILIT_PAYMENT_TERM_INDEX)) {
+    } else if(cellIndex.equals(PORTABILITY_PAYMENT_TERM_INDEX)) {
       lifePensionDefferalPeriod.setPortabilityPaymentTerm((int) currentCell.getNumericCellValue());
+    } else if(cellIndex.equals(INVESTMENT_FUNDS_INDEX)) {
+      lifePensionDefferalPeriod.setInvestimentFunds(Collections.singletonList(ExtractValuesUtil.extractInvestmentFunds(currentCell.getStringCellValue())));
     }
 
   }
@@ -162,7 +246,7 @@ public class ConversorExcetToJsonUseCase {
     Integer CONTRACT_TERMS_CONDITIONS_INDEX = 7;
 
     if(cellIndex.equals(TYPE_INDEX)) {
-      details.setType(extractTypeEnum(currentCell.getStringCellValue()));
+      details.setType(ExtractValuesUtil.extractTypeEnum(currentCell.getStringCellValue()));
     } else if(cellIndex.equals(SUSEP_PROCESS_INDEX)) {
       details.setSusepProcessNumber(currentCell.getStringCellValue());
     } else if(cellIndex.equals(CONTRACT_TERMS_CONDITIONS_INDEX)) {
@@ -177,48 +261,27 @@ public class ConversorExcetToJsonUseCase {
     Integer SEGMENT_INDEX = 2;
     Integer MODALITY_INDEX = 4;
     Integer OPTIONAL_COVERAGE_INDEX = 5;
+    Integer TARGET_AUDIENCE_INDEX = 34;
 
     if(cellIndex.equals(NAME_INDEX)) {
       product.setName(currentCell.getStringCellValue());
     } else if(cellIndex.equals(CODE_INDEX)) {
       product.setCode(String.valueOf((int) currentCell.getNumericCellValue()));
     } else if(cellIndex.equals(SEGMENT_INDEX)) {
-      product.setSegment(extractSegmentEnum(currentCell.getStringCellValue()));
+      product.setSegment(ExtractValuesUtil.extractSegmentEnum(currentCell.getStringCellValue()));
     } else if(cellIndex.equals(MODALITY_INDEX)) {
-      product.setModality(extractModalityEnum(currentCell.getStringCellValue()));
-    }else if(cellIndex.equals(OPTIONAL_COVERAGE_INDEX)) {
+      product.setModality(ExtractValuesUtil.extractModalityEnum(currentCell.getStringCellValue()));
+    } else if(cellIndex.equals(OPTIONAL_COVERAGE_INDEX)) {
       product.setOptionalCoverage(currentCell.getStringCellValue());
+    } else if(cellIndex.equals(TARGET_AUDIENCE_INDEX)) {
+      product.setTargetAudience(ExtractValuesUtil.extractTargetAudienceEnum(currentCell.getStringCellValue()));
     }
-  }
-
-  private Boolean extractBooleanValue(String value) {
-    return value.equals("SIM");
-  }
-
-  private LifePensionProduct.ModalityEnum extractModalityEnum(String modality) {
-    if(modality.equals("1. Contribuição variável") || modality.equals("CONTRIBUIÇÃO VARIÁVEL")) return LifePensionProduct.ModalityEnum.CONTRIBUICAO_VARIAVEL;
-    if(modality.equals("2. Benefício definido") || modality.equals("BENEFÍCIO DEFINIDO")) return LifePensionProduct.ModalityEnum.BENEFICIO_DEFINIDO;
-    return null;
-  }
-
-  private LifePensionProduct.SegmentEnum extractSegmentEnum(String segment) {
-    if(segment.equals("1. Seguro Pessoas") || segment.equals("SEGURO PESSOAS")) return LifePensionProduct.SegmentEnum.SEGURO_PESSOAS;
-    if(segment.equals("2. Previdência") || segment.equals("PREVIDÊNCIA")) return LifePensionProduct.SegmentEnum.PREVIDENCIA;
-    return null;
-  }
-
-  private LifePensionProductDetails.TypeEnum extractTypeEnum(String type) {
-    return LifePensionProductDetails.TypeEnum.fromValue(type);
-  }
-
-  private LifePensionDefferalPeriod.UpdateIndexEnum extractUpdateIndexEnum(String updateIndex) {
-    return LifePensionDefferalPeriod.UpdateIndexEnum.fromValue(updateIndex);
   }
 
   private Workbook getWorkbook() throws IOException {
     logger.info("Reading workbook...");
     Workbook workbook;
-    try (FileInputStream excelFile = new FileInputStream(new File(FILE_PATH))) {
+    try (FileInputStream excelFile = new FileInputStream(FILE_PATH)) {
       workbook = new XSSFWorkbook(excelFile);
     }
 
@@ -260,7 +323,7 @@ public class ConversorExcetToJsonUseCase {
   private LifePensionCompany getCompany(List<LifePensionProduct> products) {
     LifePensionCompany lifePensionCompany = new LifePensionCompany();
     lifePensionCompany.setName("Bradesco Vida e Previdência");
-    lifePensionCompany.setCnpjNumber("51.990.695/0001-37");
+    lifePensionCompany.setCnpjNumber("51990695000137");
     lifePensionCompany.setProducts(products);
     return lifePensionCompany;
   }

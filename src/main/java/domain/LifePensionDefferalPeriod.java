@@ -10,20 +10,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * LifePensionDefferalPeriod
+ */
 public class LifePensionDefferalPeriod  implements Serializable {
   private static final long serialVersionUID = 1L;
 
   @JsonProperty("interestRate")
-  private String interestRate;
+  private BigDecimal interestRate;
 
   /**
    * Indice garantido que remunera o plano durante a fase de diferimento/ acumulação.
    */
   public enum UpdateIndexEnum {
     IPCA("IPCA"),
-    
+
     IGP_M("IGP-M"),
-    
+
     INPC("INPC");
 
     private String value;
@@ -70,23 +73,23 @@ public class LifePensionDefferalPeriod  implements Serializable {
    */
   public enum PremiumPaymentMethodEnum {
     CARTAO_CREDITO("CARTAO_CREDITO"),
-    
+
     DEBITO_CONTA("DEBITO_CONTA"),
-    
+
     DEBITO_CONTA_POUPANCA("DEBITO_CONTA_POUPANCA"),
-    
+
     BOLETO_BANCARIO("BOLETO_BANCARIO"),
-    
+
     PIX("PIX"),
-    
+
     CARTAO_DEBITO("CARTAO_DEBITO"),
-    
+
     REGRA_PARCEIRO("REGRA_PARCEIRO"),
-    
+
     CONSIGUINACAO_FOLHA_PAGAMENTO("CONSIGUINACAO_FOLHA_PAGAMENTO"),
-    
+
     PONTOS_PROGRAMA_BENEFICIO("PONTOS_PROGRAMA_BENEFICIO"),
-    
+
     OUTROS("OUTROS");
 
     private String value;
@@ -146,16 +149,17 @@ public class LifePensionDefferalPeriod  implements Serializable {
   @JsonProperty("investimentFunds")
   private List<LifePensionInvestmentFunds> investimentFunds = new ArrayList<>();
 
-  public LifePensionDefferalPeriod interestRate(String interestRate) {
+  public LifePensionDefferalPeriod interestRate(BigDecimal interestRate) {
     this.interestRate = interestRate;
     return this;
   }
 
-  public String getInterestRate() {
+
+  public BigDecimal getInterestRate() {
     return interestRate;
   }
 
-  public void setInterestRate(String interestRate) {
+  public void setInterestRate(BigDecimal interestRate) {
     this.interestRate = interestRate;
   }
 
@@ -176,7 +180,6 @@ public class LifePensionDefferalPeriod  implements Serializable {
     this.otherMinimumPerformanceGarantees = otherMinimumPerformanceGarantees;
     return this;
   }
-
   public String getOtherMinimumPerformanceGarantees() {
     return otherMinimumPerformanceGarantees;
   }
@@ -207,7 +210,6 @@ public class LifePensionDefferalPeriod  implements Serializable {
     this.minimumPremiumAmount.add(minimumPremiumAmountItem);
     return this;
   }
-
 
   public List<LifePensionDefferalPeriodMinimumPremiumAmount> getMinimumPremiumAmount() {
     return minimumPremiumAmount;
@@ -256,6 +258,7 @@ public class LifePensionDefferalPeriod  implements Serializable {
     return this;
   }
 
+
   public Boolean getPermissonScheduledFinancialPayments() {
     return permissonScheduledFinancialPayments;
   }
@@ -281,6 +284,7 @@ public class LifePensionDefferalPeriod  implements Serializable {
     this.gracePeriodBetweenRedemptionRequests = gracePeriodBetweenRedemptionRequests;
     return this;
   }
+
 
   public Integer getGracePeriodBetweenRedemptionRequests() {
     return gracePeriodBetweenRedemptionRequests;
@@ -308,6 +312,7 @@ public class LifePensionDefferalPeriod  implements Serializable {
     return this;
   }
 
+
   public Integer getGracePeriodPortability() {
     return gracePeriodPortability;
   }
@@ -321,6 +326,7 @@ public class LifePensionDefferalPeriod  implements Serializable {
     return this;
   }
 
+
   public Integer getGracePeriodBetweenPortabilityRequests() {
     return gracePeriodBetweenPortabilityRequests;
   }
@@ -333,6 +339,7 @@ public class LifePensionDefferalPeriod  implements Serializable {
     this.portabilityPaymentTerm = portabilityPaymentTerm;
     return this;
   }
+
 
   public Integer getPortabilityPaymentTerm() {
     return portabilityPaymentTerm;
@@ -351,6 +358,7 @@ public class LifePensionDefferalPeriod  implements Serializable {
     this.investimentFunds.add(investimentFundsItem);
     return this;
   }
+
 
   public List<LifePensionInvestmentFunds> getInvestimentFunds() {
     return investimentFunds;
@@ -371,20 +379,20 @@ public class LifePensionDefferalPeriod  implements Serializable {
     }
     LifePensionDefferalPeriod lifePensionDefferalPeriod = (LifePensionDefferalPeriod) o;
     return Objects.equals(this.interestRate, lifePensionDefferalPeriod.interestRate) &&
-        Objects.equals(this.updateIndex, lifePensionDefferalPeriod.updateIndex) &&
-        Objects.equals(this.otherMinimumPerformanceGarantees, lifePensionDefferalPeriod.otherMinimumPerformanceGarantees) &&
-        Objects.equals(this.reversalFinancialResults, lifePensionDefferalPeriod.reversalFinancialResults) &&
-        Objects.equals(this.minimumPremiumAmount, lifePensionDefferalPeriod.minimumPremiumAmount) &&
-        Objects.equals(this.premiumPaymentMethod, lifePensionDefferalPeriod.premiumPaymentMethod) &&
-        Objects.equals(this.permissionExtraordinaryContributions, lifePensionDefferalPeriod.permissionExtraordinaryContributions) &&
-        Objects.equals(this.permissonScheduledFinancialPayments, lifePensionDefferalPeriod.permissonScheduledFinancialPayments) &&
-        Objects.equals(this.gracePeriodRedemption, lifePensionDefferalPeriod.gracePeriodRedemption) &&
-        Objects.equals(this.gracePeriodBetweenRedemptionRequests, lifePensionDefferalPeriod.gracePeriodBetweenRedemptionRequests) &&
-        Objects.equals(this.redemptionPaymentTerm, lifePensionDefferalPeriod.redemptionPaymentTerm) &&
-        Objects.equals(this.gracePeriodPortability, lifePensionDefferalPeriod.gracePeriodPortability) &&
-        Objects.equals(this.gracePeriodBetweenPortabilityRequests, lifePensionDefferalPeriod.gracePeriodBetweenPortabilityRequests) &&
-        Objects.equals(this.portabilityPaymentTerm, lifePensionDefferalPeriod.portabilityPaymentTerm) &&
-        Objects.equals(this.investimentFunds, lifePensionDefferalPeriod.investimentFunds);
+            Objects.equals(this.updateIndex, lifePensionDefferalPeriod.updateIndex) &&
+            Objects.equals(this.otherMinimumPerformanceGarantees, lifePensionDefferalPeriod.otherMinimumPerformanceGarantees) &&
+            Objects.equals(this.reversalFinancialResults, lifePensionDefferalPeriod.reversalFinancialResults) &&
+            Objects.equals(this.minimumPremiumAmount, lifePensionDefferalPeriod.minimumPremiumAmount) &&
+            Objects.equals(this.premiumPaymentMethod, lifePensionDefferalPeriod.premiumPaymentMethod) &&
+            Objects.equals(this.permissionExtraordinaryContributions, lifePensionDefferalPeriod.permissionExtraordinaryContributions) &&
+            Objects.equals(this.permissonScheduledFinancialPayments, lifePensionDefferalPeriod.permissonScheduledFinancialPayments) &&
+            Objects.equals(this.gracePeriodRedemption, lifePensionDefferalPeriod.gracePeriodRedemption) &&
+            Objects.equals(this.gracePeriodBetweenRedemptionRequests, lifePensionDefferalPeriod.gracePeriodBetweenRedemptionRequests) &&
+            Objects.equals(this.redemptionPaymentTerm, lifePensionDefferalPeriod.redemptionPaymentTerm) &&
+            Objects.equals(this.gracePeriodPortability, lifePensionDefferalPeriod.gracePeriodPortability) &&
+            Objects.equals(this.gracePeriodBetweenPortabilityRequests, lifePensionDefferalPeriod.gracePeriodBetweenPortabilityRequests) &&
+            Objects.equals(this.portabilityPaymentTerm, lifePensionDefferalPeriod.portabilityPaymentTerm) &&
+            Objects.equals(this.investimentFunds, lifePensionDefferalPeriod.investimentFunds);
   }
 
   @Override
@@ -396,7 +404,7 @@ public class LifePensionDefferalPeriod  implements Serializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class LifePensionDefferalPeriod {\n");
-    
+
     sb.append("    interestRate: ").append(toIndentedString(interestRate)).append("\n");
     sb.append("    updateIndex: ").append(toIndentedString(updateIndex)).append("\n");
     sb.append("    otherMinimumPerformanceGarantees: ").append(toIndentedString(otherMinimumPerformanceGarantees)).append("\n");
