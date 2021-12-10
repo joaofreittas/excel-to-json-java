@@ -6,6 +6,9 @@ import java.io.Serializable;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 
+/**
+ * ResponseErrorErrors
+ */
 public class ResponseErrorErrors  implements Serializable {
   private static final long serialVersionUID = 1L;
 
@@ -26,6 +29,10 @@ public class ResponseErrorErrors  implements Serializable {
     return this;
   }
 
+  /**
+   * Código de erro específico do endpoint
+   * @return code
+  */
   public String getCode() {
     return code;
   }
@@ -39,6 +46,10 @@ public class ResponseErrorErrors  implements Serializable {
     return this;
   }
 
+  /**
+   * Título legível por humanos deste erro específico
+   * @return title
+  */
   public String getTitle() {
     return title;
   }
@@ -52,6 +63,10 @@ public class ResponseErrorErrors  implements Serializable {
     return this;
   }
 
+  /**
+   * Descrição legível por humanos deste erro específico
+   * @return detail
+  */
   public String getDetail() {
     return detail;
   }
@@ -65,6 +80,10 @@ public class ResponseErrorErrors  implements Serializable {
     return this;
   }
 
+  /**
+   * Data e hora da consulta, conforme especificação RFC-3339, formato UTC.
+   * @return requestDateTime
+  */
   public OffsetDateTime getRequestDateTime() {
     return requestDateTime;
   }

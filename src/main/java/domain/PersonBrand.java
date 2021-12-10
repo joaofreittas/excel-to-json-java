@@ -3,23 +3,22 @@ package domain;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
-
-public class LifePensionBrand  implements Serializable {
+public class PersonBrand  implements Serializable {
   private static final long serialVersionUID = 1L;
 
   @JsonProperty("name")
   private String name;
 
   @JsonProperty("companies")
-  private LifePensionCompany companies;
+  private List<PersonCompany> companies = new ArrayList<>();
 
-  public LifePensionBrand name(String name) {
+  public PersonBrand name(String name) {
     this.name = name;
     return this;
   }
-
-
 
   public String getName() {
     return name;
@@ -29,16 +28,21 @@ public class LifePensionBrand  implements Serializable {
     this.name = name;
   }
 
-  public LifePensionBrand companies(LifePensionCompany companies) {
+  public PersonBrand companies(List<PersonCompany> companies) {
     this.companies = companies;
     return this;
   }
 
-  public LifePensionCompany getCompanies() {
+  public PersonBrand addCompaniesItem(PersonCompany companiesItem) {
+    this.companies.add(companiesItem);
+    return this;
+  }
+
+  public List<PersonCompany> getCompanies() {
     return companies;
   }
 
-  public void setCompanies(LifePensionCompany companies) {
+  public void setCompanies(List<PersonCompany> companies) {
     this.companies = companies;
   }
 
@@ -51,9 +55,9 @@ public class LifePensionBrand  implements Serializable {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    LifePensionBrand lifePensionBrand = (LifePensionBrand) o;
-    return Objects.equals(this.name, lifePensionBrand.name) &&
-        Objects.equals(this.companies, lifePensionBrand.companies);
+    PersonBrand personBrand = (PersonBrand) o;
+    return Objects.equals(this.name, personBrand.name) &&
+        Objects.equals(this.companies, personBrand.companies);
   }
 
   @Override
@@ -64,7 +68,7 @@ public class LifePensionBrand  implements Serializable {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class LifePensionBrand {\n");
+    sb.append("class PersonBrand {\n");
     
     sb.append("    name: ").append(toIndentedString(name)).append("\n");
     sb.append("    companies: ").append(toIndentedString(companies)).append("\n");

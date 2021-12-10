@@ -1,12 +1,12 @@
 package domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-public class LifePensionCompany  implements Serializable {
+
+public class PersonCompany  implements Serializable {
   private static final long serialVersionUID = 1L;
 
   @JsonProperty("name")
@@ -16,14 +16,12 @@ public class LifePensionCompany  implements Serializable {
   private String cnpjNumber;
 
   @JsonProperty("products")
-  private List<LifePensionProduct> products = new ArrayList<>();
+  private List<PersonProducts> products = null;
 
-  public LifePensionCompany name(String name) {
+  public PersonCompany name(String name) {
     this.name = name;
     return this;
   }
-
-
 
   public String getName() {
     return name;
@@ -33,11 +31,10 @@ public class LifePensionCompany  implements Serializable {
     this.name = name;
   }
 
-  public LifePensionCompany cnpjNumber(String cnpjNumber) {
+  public PersonCompany cnpjNumber(String cnpjNumber) {
     this.cnpjNumber = cnpjNumber;
     return this;
   }
-
 
 
   public String getCnpjNumber() {
@@ -48,21 +45,25 @@ public class LifePensionCompany  implements Serializable {
     this.cnpjNumber = cnpjNumber;
   }
 
-  public LifePensionCompany products(List<LifePensionProduct> products) {
+  public PersonCompany products(List<PersonProducts> products) {
     this.products = products;
     return this;
   }
 
-  public LifePensionCompany addProductsItem(LifePensionProduct productsItem) {
+  public PersonCompany addProductsItem(PersonProducts productsItem) {
+    if (this.products == null) {
+      this.products = new ArrayList<>();
+    }
     this.products.add(productsItem);
     return this;
   }
 
-  public List<LifePensionProduct> getProducts() {
+
+  public List<PersonProducts> getProducts() {
     return products;
   }
 
-  public void setProducts(List<LifePensionProduct> products) {
+  public void setProducts(List<PersonProducts> products) {
     this.products = products;
   }
 
@@ -75,10 +76,10 @@ public class LifePensionCompany  implements Serializable {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    LifePensionCompany lifePensionCompany = (LifePensionCompany) o;
-    return Objects.equals(this.name, lifePensionCompany.name) &&
-        Objects.equals(this.cnpjNumber, lifePensionCompany.cnpjNumber) &&
-        Objects.equals(this.products, lifePensionCompany.products);
+    PersonCompany personCompany = (PersonCompany) o;
+    return Objects.equals(this.name, personCompany.name) &&
+        Objects.equals(this.cnpjNumber, personCompany.cnpjNumber) &&
+        Objects.equals(this.products, personCompany.products);
   }
 
   @Override
@@ -89,7 +90,7 @@ public class LifePensionCompany  implements Serializable {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class LifePensionCompany {\n");
+    sb.append("class PersonCompany {\n");
     
     sb.append("    name: ").append(toIndentedString(name)).append("\n");
     sb.append("    cnpjNumber: ").append(toIndentedString(cnpjNumber)).append("\n");

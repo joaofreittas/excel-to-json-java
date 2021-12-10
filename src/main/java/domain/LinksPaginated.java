@@ -28,7 +28,6 @@ public class LinksPaginated  implements Serializable {
     return this;
   }
 
-
   public String getSelf() {
     return self;
   }
@@ -42,6 +41,8 @@ public class LinksPaginated  implements Serializable {
     return this;
   }
 
+
+
   public String getFirst() {
     return first;
   }
@@ -54,6 +55,7 @@ public class LinksPaginated  implements Serializable {
     this.prev = prev;
     return this;
   }
+
 
   public String getPrev() {
     return prev;
@@ -80,6 +82,7 @@ public class LinksPaginated  implements Serializable {
     this.last = last;
     return this;
   }
+
 
   public String getLast() {
     return last;

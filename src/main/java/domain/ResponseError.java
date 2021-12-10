@@ -7,6 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * ResponseError
+ */
 public class ResponseError  implements Serializable {
   private static final long serialVersionUID = 1L;
 
@@ -26,6 +29,10 @@ public class ResponseError  implements Serializable {
     return this;
   }
 
+  /**
+   * Get errors
+   * @return errors
+  */
   public List<ResponseErrorErrors> getErrors() {
     return errors;
   }
@@ -38,6 +45,11 @@ public class ResponseError  implements Serializable {
     this.meta = meta;
     return this;
   }
+
+  /**
+   * Get meta
+   * @return meta
+  */
 
   public MetaPaginated getMeta() {
     return meta;
