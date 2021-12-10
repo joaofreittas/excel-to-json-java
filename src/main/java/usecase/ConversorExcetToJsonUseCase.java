@@ -170,7 +170,6 @@ public class ConversorExcetToJsonUseCase {
     } else if(cellIndex.equals(PERIODICIDADE_REENQUADRAMENTO)) {
       personAgeAdjustment.setFrequency(currentCell.getStringCellValue().equals("") ? 0 : Integer.valueOf(currentCell.getStringCellValue()));
     }
-
   }
 
   private void buildPersonBenefitRecalculation(Cell currentCell, Integer cellIndex, PersonBenefitRecalculation personBenefitRecalculation) {
@@ -217,7 +216,6 @@ public class ConversorExcetToJsonUseCase {
     } else if(cellIndex.equals(VALOR_MAXIMO_MOEDA_DESCRICAO)) {
       personCoverageAttibutesDetailsUnit.setDescription(currentCell.getStringCellValue());
     }
-
   }
 
   private void buildPersonCoverageAttibutesDetailsUnitMin(Cell currentCell, Integer cellIndex, PersonCoverageAttibutesDetailsUnit personCoverageAttibutesDetailsUnit) {
@@ -288,8 +286,6 @@ public class ConversorExcetToJsonUseCase {
       personCoverageAttributes.setExcludedRisks(ExtractValuesUtil.extractExcludedRisk(currentCell.getStringCellValue()));
     } else if(cellIndex.equals(CONTRATACAO_ISOLADA)) {
       personCoverageAttributes.setAllowApartPurchase(currentCell.getBooleanCellValue());
-    } else if(cellIndex.equals(CONTRATACAO_ISOLADA)) {
-      personCoverageAttributes.setAllowApartPurchase(currentCell.getBooleanCellValue());
     }
   }
 
@@ -330,6 +326,7 @@ public class ConversorExcetToJsonUseCase {
     Integer TIPO_RENDA = 14;
     Integer CAPITAL_GLOBAL = 35;
     Integer VIGENCIA = 36;
+    Integer REGIME_FINANCEIRO = 43;
 
 
     if(cellIndex.equals(NAME_INDEX)) {
@@ -354,6 +351,8 @@ public class ConversorExcetToJsonUseCase {
       product.setGlobalCapital(currentCell.getBooleanCellValue());
     } else if(cellIndex.equals(VIGENCIA)) {
       product.setValidity(ExtractValuesUtil.extractValidityEnum(currentCell.getStringCellValue()));
+    } else if(cellIndex.equals(REGIME_FINANCEIRO)) {
+      product.setContractType(ExtractValuesUtil.extractContractType(currentCell.getStringCellValue()));
     }
 
   }

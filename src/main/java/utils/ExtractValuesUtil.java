@@ -205,4 +205,9 @@ public class ExtractValuesUtil {
 
     return map.get(stringCellValue);
   }
+
+  public static PersonProducts.ContractTypeEnum extractContractType(String stringCellValue) {
+    Map<String, PersonProducts.ContractTypeEnum> map = new HashMap<>();
+    return map.get(stringCellValue);
+  }
 }
